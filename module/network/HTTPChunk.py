@@ -256,8 +256,10 @@ class HTTPChunk(HTTPRequest):
             if line.startswith("accept-ranges") and "bytes" in line:
                 self.p.chunkSupport = True
 
-            if line.startswith("content-disposition") and "filename=" in line:
-                name = orgline.partition("filename=")[2]
+            if line.startswith("content-disposition") and "filename" in line:
+                name = orgline.partition("filename*=")[2]
+                if len(name) == 0:
+                    name = orgline.partition("filename=")[2]
                 name = name.replace('"', "").replace("'", "").replace(";", "").strip()
                 self.p.nameDisposition = name
                 self.log.debug("Content-Disposition: %s" % name)
